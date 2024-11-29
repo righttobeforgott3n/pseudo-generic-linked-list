@@ -102,7 +102,7 @@
 
 //
 #define PSG_LINKED_LIST_PUSH_FIRST_FUNCTION(user_type, item_type)                                                                   \
-    PSG_LINKED_LIST_PUSH_FIRST_FUNCTION_PROTO(user_type, item_type)                                                                            \
+    PSG_LINKED_LIST_PUSH_FIRST_FUNCTION_PROTO(user_type, item_type)                                                                 \
     {                                                                                                                               \
         if (self)                                                                                                                   \
         {                                                                                                                           \
@@ -130,6 +130,17 @@
         return item;                                                    \
     }
 
+//
+#define PSG_LINKED_LIST_LAST_FUNCTION(user_type, item_type)   \
+    PSG_LINKED_LIST_LAST_FUNCTION_PROTO(user_type, item_type) \
+    {                                                         \
+        if (self)                                             \
+        {                                                     \
+            return self->last->prev->item;                    \
+        }                                                     \
+        return 0;                                             \
+    }
+
 #define PSG_LINKED_LIST_DEFINITION_MOD(user_type, item_type)  \
     PSG_NODE_STRUCTURE(user_type, item_type);                 \
     PSG_NODE_NEW_FUNCTION(user_type, item_type)               \
@@ -139,4 +150,5 @@
     PSG_LINKED_LIST_FREE_FUNCTION(user_type, item_type)       \
     PSG_LINKED_LIST_GET_SIZE_FUNCTION(user_type, item_type)   \
     PSG_LINKED_LIST_PUSH_FIRST_FUNCTION(user_type, item_type) \
-    PSG_LINKED_LIST_POP_LAST_FUNCTION(user_type, item_type)
+    PSG_LINKED_LIST_POP_LAST_FUNCTION(user_type, item_type)   \
+    PSG_LINKED_LIST_LAST_FUNCTION(user_type, item_type)

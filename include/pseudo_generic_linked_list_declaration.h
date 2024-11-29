@@ -52,8 +52,17 @@
 #define PSG_LINKED_LIST_POP_LAST_FUNCTION_NAME(user_type) \
     psg_##user_type##_linked_list_pop_last
 
+//
 #define PSG_LINKED_LIST_POP_LAST_FUNCTION_PROTO(user_type, item_type) \
     item_type PSG_LINKED_LIST_POP_LAST_FUNCTION_NAME(user_type)(PSG_LINKED_LIST_OPAQUE_NAME(user_type) self)
+
+//
+#define PSG_LINKED_LIST_LAST_FUNCTION_NAME(user_type) \
+    psg_##user_type##linked_list_last
+
+//
+#define PSG_LINKED_LIST_LAST_FUNCTION_PROTO(user_type, item_type) \
+    item_type PSG_LINKED_LIST_LAST_FUNCTION_NAME(user_type)(PSG_LINKED_LIST_OPAQUE_NAME(user_type) self)
 
 #define PSG_LINKED_LIST_DECLARATION_MOD(user_type, item_type)        \
     PSG_LINKED_LIST_TYPEDEF(user_type)                               \
@@ -61,6 +70,7 @@
     PSG_LINKED_LIST_FREE_FUNCTION_PROTOTYPE(user_type, item_type);   \
     PSG_LINKED_LIST_GET_SIZE_FUNCTION_PROTO(user_type, item_type);   \
     PSG_LINKED_LIST_PUSH_FIRST_FUNCTION_PROTO(user_type, item_type); \
-    PSG_LINKED_LIST_POP_LAST_FUNCTION_PROTO(user_type, item_type);
+    PSG_LINKED_LIST_POP_LAST_FUNCTION_PROTO(user_type, item_type);   \
+    PSG_LINKED_LIST_LAST_FUNCTION_PROTO(user_type, item_type);
 
 #endif
