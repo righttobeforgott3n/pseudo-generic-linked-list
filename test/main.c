@@ -87,6 +87,32 @@ int main(void)
     // free(i);
 
     // OK
+    // PSG_LINKED_LIST_OPAQUE_NAME(int_p) list = PSG_LINKED_LIST_NEW_FUNCTION_NAME(int_p)();
+    // int *i = malloc(sizeof(int));
+    // *i = 1;
+    // int *ii = malloc(sizeof(int));
+    // *ii = 2;
+    // int *iii = malloc(sizeof(int));
+    // *iii = 3;
+    // int *iv = malloc(sizeof(int));
+    // *iv = 4;
+
+    // //PSG_LINKED_LIST_PUSH_FIRST_FUNCTION_NAME(int_p)(list, iv);
+    // PSG_LINKED_LIST_PUSH_FIRST_FUNCTION_NAME(int_p)(list, iii);
+    // PSG_LINKED_LIST_PUSH_FIRST_FUNCTION_NAME(int_p)(list, ii);
+    // PSG_LINKED_LIST_PUSH_FIRST_FUNCTION_NAME(int_p)(list, i);
+
+    // printf("%d\n", *PSG_LINKED_LIST_LAST_FUNCTION_NAME(int_p)(list));
+
+    // printf("size: %zu\n", PSG_LINKED_LIST_GET_SIZE_FUNCTION_NAME(int_p)(list));
+
+    // PSG_LINKED_LIST_FREE_FUNCTION_NAME(int_p)(list);
+    // free(i);
+    // free(ii);
+    // free(iii);
+    // free(iv);
+
+    // ...
     PSG_LINKED_LIST_OPAQUE_NAME(int_p) list = PSG_LINKED_LIST_NEW_FUNCTION_NAME(int_p)();
     int *i = malloc(sizeof(int));
     *i = 1;
@@ -96,21 +122,24 @@ int main(void)
     *iii = 3;
     int *iv = malloc(sizeof(int));
     *iv = 4;
-
-    //PSG_LINKED_LIST_PUSH_FIRST_FUNCTION_NAME(int_p)(list, iv);
+    PSG_LINKED_LIST_PUSH_FIRST_FUNCTION_NAME(int_p)(list, iv);
     PSG_LINKED_LIST_PUSH_FIRST_FUNCTION_NAME(int_p)(list, iii);
     PSG_LINKED_LIST_PUSH_FIRST_FUNCTION_NAME(int_p)(list, ii);
     PSG_LINKED_LIST_PUSH_FIRST_FUNCTION_NAME(int_p)(list, i);
 
-    printf("%d\n", *PSG_LINKED_LIST_LAST_FUNCTION_NAME(int_p)(list));
-
-    printf("size: %zu\n", PSG_LINKED_LIST_GET_SIZE_FUNCTION_NAME(int_p)(list));
-
-    PSG_LINKED_LIST_FREE_FUNCTION_NAME(int_p)(list);
+    PSG_LINKED_LIST_ITERATOR_OPAQUE_NAME(int_p) it = PSG_LINKED_LIST_ITERATOR_NEW_FUNCTION_NAME(int_p)(list);
+    while(!PSG_LINKED_LIST_ITERATOR_IS_LAST_FUNCTION_NAME(int_p)(it))
+    {
+        printf("%d\n", *PSG_LINKED_LIST_ITERATOR_GET_ITEM_FUNCTION_NAME(int_p)(it));
+        PSG_LINKED_LIST_ITERATOR_NEXT_FUNCTION_NAME(int_p)(it);
+    }
+    free((void*)it);
+    
     free(i);
     free(ii);
     free(iii);
     free(iv);
+    PSG_LINKED_LIST_FREE_FUNCTION_NAME(int_p)(list);
 
     return 0;
 }
