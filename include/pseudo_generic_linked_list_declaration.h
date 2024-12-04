@@ -86,6 +86,14 @@
     PSG_LINKED_LIST_ITERATOR_NEW_FUNCTION_NAME(user_type)(PSG_LINKED_LIST_OPAQUE_NAME(user_type) iterable)
 
 //
+#define PSG_LINKED_LIST_ITERATOR_FREE_FUNCTION_NAME(user_type) \
+    psg_##user_type##_linked_list_iterator_free
+
+//
+#define PSG_LINKED_LIST_ITERATOR_FREE_FUNCTION_PROTO(user_type) \
+    void PSG_LINKED_LIST_ITERATOR_FREE_FUNCTION_NAME(user_type)(PSG_LINKED_LIST_ITERATOR_OPAQUE_NAME(user_type) self)
+
+//
 #define PSG_LINKED_LIST_ITERATOR_IS_FIRST_FUNCTION_NAME(user_type) \
     psg_##user_type##_linked_list_iterator_is_first
 
@@ -125,6 +133,14 @@
 #define PSG_LINKED_LIST_ITERATOR_NEXT_FUNCTION_PROTO(user_type) \
     void PSG_LINKED_LIST_ITERATOR_NEXT_FUNCTION_NAME(user_type)(PSG_LINKED_LIST_ITERATOR_OPAQUE_NAME(user_type) self)
 
+//
+#define PSG_LINKED_LIST_ITERATOR_EQUALS_FUNCTION_NAME(user_type) \
+    psg_##user_type##_linked_list_iterator_equals
+
+//
+#define PSG_LINKED_LIST_ITERATOR_EQUALS_FUNCTION_PROTO(user_type) \
+    int PSG_LINKED_LIST_ITERATOR_EQUALS_FUNCTION_NAME(user_type)(PSG_LINKED_LIST_ITERATOR_OPAQUE_NAME(user_type) self, PSG_LINKED_LIST_ITERATOR_OPAQUE_NAME(user_type) to_compare)
+
 #define PSG_LINKED_LIST_DECLARATION_MOD(user_type, item_type)               \
     PSG_LINKED_LIST_TYPEDEF(user_type)                                      \
     PSG_LINKED_LIST_NEW_FUNCTION_PROTOTYPE(user_type, item_type);           \
@@ -135,10 +151,12 @@
     PSG_LINKED_LIST_LAST_FUNCTION_PROTO(user_type, item_type);              \
     PSG_LINKED_LIST_ITERATOR_TYPEDEF(user_type)                             \
     PSG_LINKED_LIST_ITERATOR_NEW_FUNCTION_PROTO(user_type);                 \
+    PSG_LINKED_LIST_ITERATOR_FREE_FUNCTION_PROTO(user_type);                \
     PSG_LINKED_LIST_ITERATOR_IS_FIRST_FUNCTION_PROTO(user_type);            \
     PSG_LINKED_LIST_ITERATOR_IS_LAST_FUNCTION_PROTO(user_type);             \
     PSG_LINKED_LIST_ITERATOR_GET_ITEM_FUNCTION_PROTO(user_type, item_type); \
     PSG_LINKED_LIST_ITERATOR_SET_ITEM_FUNCTION_PROTO(user_type, item_type); \
-    PSG_LINKED_LIST_ITERATOR_NEXT_FUNCTION_PROTO(user_type);
+    PSG_LINKED_LIST_ITERATOR_NEXT_FUNCTION_PROTO(user_type);                \
+    PSG_LINKED_LIST_ITERATOR_EQUALS_FUNCTION_PROTO(user_type);
 
 #endif
