@@ -223,20 +223,20 @@
     }
 
 //
-#define PSG_LINKED_LIST_ITERATOR_SET_ITEM_FUNCTION(user_type, item_type)   \
-    PSG_LINKED_LIST_ITERATOR_SET_ITEM_FUNCTION_PROTO(user_type, item_type) \
-    {                                                                      \
-        if (self && self->curr)                                            \
-        {                                                                  \
-            self->curr->item = item;                                       \
-        }                                                                  \
+#define PSG_LINKED_LIST_ITERATOR_SET_ITEM_FUNCTION(user_type, item_type)                 \
+    PSG_LINKED_LIST_ITERATOR_SET_ITEM_FUNCTION_PROTO(user_type, item_type)               \
+    {                                                                                    \
+        if (self && self->curr && self->curr != self->first && self->curr != self->last) \
+        {                                                                                \
+            self->curr->item = item;                                                     \
+        }                                                                                \
     }
 
 //
 #define PSG_LINKED_LIST_ITERATOR_NEXT_FUNCTION(user_type)   \
     PSG_LINKED_LIST_ITERATOR_NEXT_FUNCTION_PROTO(user_type) \
     {                                                       \
-        if (self)                                           \
+        if (self && self->curr->next)                       \
         {                                                   \
             self->curr = self->curr->next;                  \
         }                                                   \
