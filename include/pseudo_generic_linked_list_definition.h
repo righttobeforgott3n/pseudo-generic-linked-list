@@ -131,24 +131,136 @@
     }
 
 //
-#define PSG_LINKED_LIST_LAST_FUNCTION(user_type, item_type)   \
-    PSG_LINKED_LIST_LAST_FUNCTION_PROTO(user_type, item_type) \
-    {                                                         \
-        if (self)                                             \
-        {                                                     \
-            return self->last->prev->item;                    \
-        }                                                     \
-        return 0;                                             \
+#define PSG_LINKED_LIST_ITERATOR_STRUCTURE_NAME(user_type) \
+    struct psg_##user_type##_linked_list_iterator_t
+
+//
+#define PSG_LINKED_LIST_ITERATOR_STRUCTURE(user_type)  \
+    PSG_LINKED_LIST_ITERATOR_STRUCTURE_NAME(user_type) \
+    {                                                  \
+        PSG_LINKED_LIST_STRUCTURE_NAME(user_type)      \
+        const *iterable;                               \
+        PSG_NODE_STRUCTURE_NAME(user_type) * curr;     \
+    };
+
+//
+#define PSG_LINKED_LIST_ITERATOR_NEW_FUNCTION(user_type)                                                                                              \
+    PSG_LINKED_LIST_ITERATOR_NEW_FUNCTION_PROTO(user_type)                                                                                            \
+    {                                                                                                                                                 \
+        if (iterable)                                                                                                                                 \
+        {                                                                                                                                             \
+            PSG_LINKED_LIST_ITERATOR_STRUCTURE_NAME(user_type) *it = 0;                                                                               \
+            if ((it = malloc(sizeof(PSG_LINKED_LIST_ITERATOR_STRUCTURE_NAME(user_type)))))                                                            \
+            {                                                                                                                                         \
+                *it = (PSG_LINKED_LIST_ITERATOR_STRUCTURE_NAME(user_type)){.iterable = iterable, .curr = iterable->size ? iterable->first->next : 0}; \
+            }                                                                                                                                         \
+            return it;                                                                                                                                \
+        }                                                                                                                                             \
+        else                                                                                                                                          \
+        {                                                                                                                                             \
+            return 0;                                                                                                                                 \
+        }                                                                                                                                             \
     }
 
-#define PSG_LINKED_LIST_DEFINITION_MOD(user_type, item_type)  \
-    PSG_NODE_STRUCTURE(user_type, item_type);                 \
-    PSG_NODE_NEW_FUNCTION(user_type, item_type)               \
-    PSG_NODE_FREE_FUNCTION(user_type, item_type)              \
-    PSG_LINKED_LIST_STRUCTURE(user_type, item_type);          \
-    PSG_LINKED_LIST_NEW_FUNCTION(user_type, item_type)        \
-    PSG_LINKED_LIST_FREE_FUNCTION(user_type, item_type)       \
-    PSG_LINKED_LIST_GET_SIZE_FUNCTION(user_type, item_type)   \
-    PSG_LINKED_LIST_PUSH_FIRST_FUNCTION(user_type, item_type) \
-    PSG_LINKED_LIST_POP_LAST_FUNCTION(user_type, item_type)   \
-    PSG_LINKED_LIST_LAST_FUNCTION(user_type, item_type)
+//
+#define PSG_LINKED_LIST_ITERATOR_FREE_FUNCTION(user_type)   \
+    PSG_LINKED_LIST_ITERATOR_FREE_FUNCTION_PROTO(user_type) \
+    {                                                       \
+        if (self)                                           \
+        {                                                   \
+            free(self);                                     \
+        }                                                   \
+    }
+
+//
+#define PSG_LINKED_LIST_ITERATOR_IS_FIRST_FUNCTION(user_type)                            \
+    PSG_LINKED_LIST_ITERATOR_IS_FIRST_FUNCTION_PROTO(user_type)                          \
+    {                                                                                    \
+        if (self && self->curr && self->iterable && self->iterable->first == self->curr) \
+        {                                                                                \
+            return 1;                                                                    \
+        }                                                                                \
+        else                                                                             \
+        {                                                                                \
+            return 0;                                                                    \
+        }                                                                                \
+    }
+
+//
+#define PSG_LINKED_LIST_ITERATOR_IS_LAST_FUNCTION(user_type)                            \
+    PSG_LINKED_LIST_ITERATOR_IS_LAST_FUNCTION_PROTO(user_type)                          \
+    {                                                                                   \
+        if (self && self->curr && self->iterable && self->iterable->last == self->curr) \
+        {                                                                               \
+            return 1;                                                                   \
+        }                                                                               \
+        else                                                                            \
+        {                                                                               \
+            return 0;                                                                   \
+        }                                                                               \
+    }
+
+//
+#define PSG_LINKED_LIST_ITERATOR_NEXT_FUNCTION(user_type)   \
+    PSG_LINKED_LIST_ITERATOR_NEXT_FUNCTION_PROTO(user_type) \
+    {                                                       \
+        if (self && self->curr && self->curr->next)         \
+        {                                                   \
+            self->curr = self->curr->next;                  \
+        }                                                   \
+    }
+
+//
+#define PSG_LINKED_LIST_ITERATOR_PREV_FUNCTION(user_type)   \
+    PSG_LINKED_LIST_ITERATOR_PREV_FUNCTION_PROTO(user_type) \
+    {                                                       \
+        if (self && self->curr && self->curr->prev)         \
+        {                                                   \
+            self->curr = self->curr->prev;                  \
+        }                                                   \
+    }
+
+//
+#define PSG_LINKED_LIST_ITERATOR_GET_ITEM_FUNCTION(user_type, item_type)                                     \
+    PSG_LINKED_LIST_ITERATOR_GET_ITEM_FUNCTION_PROTO(user_type, item_type)                                   \
+    {                                                                                                        \
+        if (self && self->curr && self->curr != self->iterable->first && self->curr != self->iterable->last) \
+        {                                                                                                    \
+            return self->curr->item;                                                                         \
+        }                                                                                                    \
+        else                                                                                                 \
+        {                                                                                                    \
+            return 0;                                                                                        \
+        }                                                                                                    \
+    }
+
+//
+#define PSG_LINKED_LIST_ITERATOR_SET_ITEM_FUNCTION(user_type, item_type)                                     \
+    PSG_LINKED_LIST_ITERATOR_SET_ITEM_FUNCTION_PROTO(user_type, item_type)                                   \
+    {                                                                                                        \
+        if (self && self->curr && self->curr != self->iterable->first && self->curr != self->iterable->last) \
+        {                                                                                                    \
+            self->curr->item = item;                                                                         \
+        }                                                                                                    \
+    }
+
+//
+#define PSG_LINKED_LIST_DEFINITION_MOD(user_type, item_type)         \
+    PSG_NODE_STRUCTURE(user_type, item_type);                        \
+    PSG_NODE_NEW_FUNCTION(user_type, item_type)                      \
+    PSG_NODE_FREE_FUNCTION(user_type, item_type)                     \
+    PSG_LINKED_LIST_STRUCTURE(user_type, item_type);                 \
+    PSG_LINKED_LIST_NEW_FUNCTION(user_type, item_type)               \
+    PSG_LINKED_LIST_FREE_FUNCTION(user_type, item_type)              \
+    PSG_LINKED_LIST_GET_SIZE_FUNCTION(user_type, item_type)          \
+    PSG_LINKED_LIST_PUSH_FIRST_FUNCTION(user_type, item_type)        \
+    PSG_LINKED_LIST_POP_LAST_FUNCTION(user_type, item_type)          \
+    PSG_LINKED_LIST_ITERATOR_STRUCTURE(user_type)                    \
+    PSG_LINKED_LIST_ITERATOR_NEW_FUNCTION(user_type)                 \
+    PSG_LINKED_LIST_ITERATOR_FREE_FUNCTION(user_type)                \
+    PSG_LINKED_LIST_ITERATOR_IS_FIRST_FUNCTION(user_type)            \
+    PSG_LINKED_LIST_ITERATOR_IS_LAST_FUNCTION(user_type)             \
+    PSG_LINKED_LIST_ITERATOR_NEXT_FUNCTION(user_type)                \
+    PSG_LINKED_LIST_ITERATOR_PREV_FUNCTION(user_type)                \
+    PSG_LINKED_LIST_ITERATOR_GET_ITEM_FUNCTION(user_type, item_type) \
+    PSG_LINKED_LIST_ITERATOR_SET_ITEM_FUNCTION(user_type, item_type)
