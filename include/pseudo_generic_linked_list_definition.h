@@ -173,6 +173,20 @@
     }
 
 //
+#define PSG_LINKED_LIST_ITERATOR_IS_EQUAL_FUNCTION(user_type)     \
+    PSG_LINKED_LIST_ITERATOR_IS_EQUAL_FUNCTION_PROTO(user_type)   \
+    {                                                             \
+        if (self && self->curr && to_compare && to_compare->curr) \
+        {                                                         \
+            if (self->curr == to_compare->curr)                   \
+            {                                                     \
+                return 1;                                         \
+            }                                                     \
+        }                                                         \
+        return 0;                                                 \
+    }
+
+//
 #define PSG_LINKED_LIST_ITERATOR_IS_FIRST_FUNCTION(user_type)                            \
     PSG_LINKED_LIST_ITERATOR_IS_FIRST_FUNCTION_PROTO(user_type)                          \
     {                                                                                    \
@@ -258,6 +272,7 @@
     PSG_LINKED_LIST_ITERATOR_STRUCTURE(user_type)                    \
     PSG_LINKED_LIST_ITERATOR_NEW_FUNCTION(user_type)                 \
     PSG_LINKED_LIST_ITERATOR_FREE_FUNCTION(user_type)                \
+    PSG_LINKED_LIST_ITERATOR_IS_EQUAL_FUNCTION(user_type)            \
     PSG_LINKED_LIST_ITERATOR_IS_FIRST_FUNCTION(user_type)            \
     PSG_LINKED_LIST_ITERATOR_IS_LAST_FUNCTION(user_type)             \
     PSG_LINKED_LIST_ITERATOR_NEXT_FUNCTION(user_type)                \
