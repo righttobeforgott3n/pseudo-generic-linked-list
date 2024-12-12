@@ -94,6 +94,14 @@
     int PSG_LINKED_LIST_ITERATOR_IS_FIRST_FUNCTION_NAME(user_type)(PSG_LINKED_LIST_ITERATOR_OPAQUE_NAME(user_type) self)
 
 //
+#define PSG_LINKED_LIST_ITERATOR_IS_EQUAL_FUNCTION_NAME(user_type) \
+    psg_##user_type##_linked_list_iterator_is_equal
+
+//
+#define PSG_LINKED_LIST_ITERATOR_IS_EQUAL_FUNCTION_PROTO(user_type) \
+    int PSG_LINKED_LIST_ITERATOR_IS_EQUAL_FUNCTION_NAME(user_type)(PSG_LINKED_LIST_ITERATOR_OPAQUE_NAME(user_type) self, PSG_LINKED_LIST_ITERATOR_OPAQUE_NAME(user_type) to_compare)
+
+//
 #define PSG_LINKED_LIST_ITERATOR_IS_LAST_FUNCTION_NAME(user_type) \
     psg_##user_type##_linked_list_iterator_is_last
 
@@ -143,6 +151,7 @@
     PSG_LINKED_LIST_ITERATOR_TYPEDEF(user_type)                             \
     PSG_LINKED_LIST_ITERATOR_NEW_FUNCTION_PROTO(user_type);                 \
     PSG_LINKED_LIST_ITERATOR_FREE_FUNCTION_PROTO(user_type);                \
+    PSG_LINKED_LIST_ITERATOR_IS_EQUAL_FUNCTION_PROTO(user_type);            \
     PSG_LINKED_LIST_ITERATOR_IS_FIRST_FUNCTION_PROTO(user_type);            \
     PSG_LINKED_LIST_ITERATOR_IS_LAST_FUNCTION_PROTO(user_type);             \
     PSG_LINKED_LIST_ITERATOR_NEXT_FUNCTION_PROTO(user_type);                \
