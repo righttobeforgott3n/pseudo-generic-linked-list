@@ -64,6 +64,8 @@
             self->last = PSG_NODE_NEW_FUNCTION_NAME(user_type)(0, 0, 0);                                                                                          \
             self->first->next = self->last;                                                                                                                       \
             self->last->prev = self->first;                                                                                                                       \
+            self->last->next = self->last;                                                                                                                        \
+            self->first->prev = self->first;                                                                                                                      \
             self->size = 0;                                                                                                                                       \
         }                                                                                                                                                         \
         return self;                                                                                                                                              \

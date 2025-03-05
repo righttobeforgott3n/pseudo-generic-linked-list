@@ -2,6 +2,174 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+void iterator_test(void)
+{
+
+	int b;
+	size_t s;
+	char * smesg = NULL;
+
+	// TEST 0
+	PSG_LINKED_LIST_OPAQUE_NAME(int_p)
+	list = PSG_LINKED_LIST_NEW_FUNCTION_NAME(int_p)();
+	s = PSG_LINKED_LIST_GET_SIZE_FUNCTION_NAME(int_p)(list);
+	b = 0 == s;
+	printf("size: %zu -> TEST 0 %s \n", s, b ? "PASSED" : "FAILED"); // @todo make it reusable
+	if (!b)
+	{
+		PSG_LINKED_LIST_FREE_FUNCTION_NAME(int_p)(list);
+		return;
+	}
+
+	// TEST 1
+	int *i = malloc(sizeof(int));
+	*i = 1;
+	int *ii = malloc(sizeof(int));
+	*ii = 2;
+	int *iii = malloc(sizeof(int));
+	*iii = 3;
+	int *iv = malloc(sizeof(int));
+	*iv = 4;
+	PSG_LINKED_LIST_PUSH_FIRST_FUNCTION_NAME(int_p)(list, iv);
+	PSG_LINKED_LIST_PUSH_FIRST_FUNCTION_NAME(int_p)(list, iii);
+	PSG_LINKED_LIST_PUSH_FIRST_FUNCTION_NAME(int_p)(list, ii);
+	PSG_LINKED_LIST_PUSH_FIRST_FUNCTION_NAME(int_p)(list, i);
+	s = PSG_LINKED_LIST_GET_SIZE_FUNCTION_NAME(int_p)(list);
+	b = 4 == s;
+	printf("size: %zu -> TEST 1 %s\n", s, b ? "PASSED" : "FAILED");
+	if (!b)
+	{
+		PSG_LINKED_LIST_FREE_FUNCTION_NAME(int_p)(list);
+		free(i);
+		free(ii);
+		free(iii);
+		free(iv);
+		return;
+	}
+
+	// TEST 2
+	size_t index = 0;
+	int values[s];
+	PSG_LINKED_LIST_ITERATOR_OPAQUE_NAME(int_p)
+	it0 = PSG_LINKED_LIST_ITERATOR_NEW_FUNCTION_NAME(int_p)(list);
+	while (!PSG_LINKED_LIST_ITERATOR_IS_LAST_FUNCTION_NAME(int_p)(it0))
+	{
+		// printf("index: %zu, value: %d\n", index, *PSG_LINKED_LIST_ITERATOR_GET_ITEM_FUNCTION_NAME(int_p)(it0));
+		*(values + index++) = *PSG_LINKED_LIST_ITERATOR_GET_ITEM_FUNCTION_NAME(int_p)(it0);
+		PSG_LINKED_LIST_ITERATOR_NEXT_FUNCTION_NAME(int_p)(it0);
+	}
+	if (*(values + --index) == 4 && *(values + --index) == 3 && *(values + --index) == 2 && *(values + --index) == 1)
+	{
+		smesg = "PASSED";
+	}
+	else
+	{
+		smesg = "FAILED";
+		b = 0;
+	}
+	printf("values: [%d, %d, %d, %d] -> TEST %s %s\n", *(values), *(values + 1), *(values + 2), *(values + 3), "2", smesg);
+	if (!b)
+	{
+		PSG_LINKED_LIST_ITERATOR_FREE_FUNCTION_NAME(int_p)(it0);
+		PSG_LINKED_LIST_FREE_FUNCTION_NAME(int_p)(list);
+		free(i);
+		free(ii);
+		free(iii);
+		free(iv);
+		return;
+	}
+
+	// TEST 3
+	PSG_LINKED_LIST_ITERATOR_NEXT_FUNCTION_NAME(int_p)(it0);
+	int v = PSG_LINKED_LIST_ITERATOR_GET_ITEM_FUNCTION_NAME(int_p)(it0) == NULL ? 0 : *PSG_LINKED_LIST_ITERATOR_GET_ITEM_FUNCTION_NAME(int_p)(it0); 
+	char *index_smsg_value = (b = PSG_LINKED_LIST_ITERATOR_IS_LAST_FUNCTION_NAME(int_p)(it0)) ? "LAST" : "NOT_LAST"; 
+	printf("value: %d, index: %s -> TEST %s %s\n", v, index_smsg_value, "3", b ? "PASSED" : "FAILED");
+	if (!b)
+	{
+		PSG_LINKED_LIST_ITERATOR_FREE_FUNCTION_NAME(int_p)(it0);
+		PSG_LINKED_LIST_FREE_FUNCTION_NAME(int_p)(list);
+		free(i);
+		free(ii);
+		free(iii);
+		free(iv);
+		return;
+	}
+
+	// TEST 4
+	index = s;
+	PSG_LINKED_LIST_ITERATOR_PREV_FUNCTION_NAME(int_p)(it0);
+	while (!PSG_LINKED_LIST_ITERATOR_IS_FIRST_FUNCTION_NAME(int_p)(it0))
+	{
+		//printf("index: %zu, value: %d\n", index, *PSG_LINKED_LIST_ITERATOR_GET_ITEM_FUNCTION_NAME(int_p)(it0));
+		*(values + --index) = *PSG_LINKED_LIST_ITERATOR_GET_ITEM_FUNCTION_NAME(int_p)(it0);
+		PSG_LINKED_LIST_ITERATOR_PREV_FUNCTION_NAME(int_p)(it0);
+	}
+	index = s;
+	if (*(values + --index) == 4 && *(values + --index) == 3 && *(values + --index) == 2 && *(values + --index) == 1)
+	{
+		smesg = "PASSED";
+	}
+	else
+	{
+		smesg = "FAILED";
+		b = 0;
+	}
+	printf("values: [%d, %d, %d, %d] -> TEST %s %s\n", *(values), *(values + 1), *(values + 2), *(values + 3), "4", smesg);
+	if (!b)
+	{
+		PSG_LINKED_LIST_ITERATOR_FREE_FUNCTION_NAME(int_p)(it0);
+		PSG_LINKED_LIST_FREE_FUNCTION_NAME(int_p)(list);
+		free(i);
+		free(ii);
+		free(iii);
+		free(iv);
+		return;
+	}
+
+	// TEST 5
+	PSG_LINKED_LIST_ITERATOR_PREV_FUNCTION_NAME(int_p)(it0);
+	v = PSG_LINKED_LIST_ITERATOR_GET_ITEM_FUNCTION_NAME(int_p)(it0) == NULL ? 0 : *PSG_LINKED_LIST_ITERATOR_GET_ITEM_FUNCTION_NAME(int_p)(it0); 
+	index_smsg_value = (b = PSG_LINKED_LIST_ITERATOR_IS_FIRST_FUNCTION_NAME(int_p)(it0)) ? "FIRST" : "NOT_FIRST"; 
+	printf("value: %d, index: %s -> TEST %s %s\n", v, index_smsg_value, "5", b ? "PASSED" : "FAILED");
+	if (!b)
+	{
+		PSG_LINKED_LIST_ITERATOR_FREE_FUNCTION_NAME(int_p)(it0);
+		PSG_LINKED_LIST_FREE_FUNCTION_NAME(int_p)(list);
+		free(i);
+		free(ii);
+		free(iii);
+		free(iv);
+		return;
+	}
+
+	// TEST 6
+	PSG_LINKED_LIST_ITERATOR_NEXT_FUNCTION_NAME(int_p)(it0);
+	int sixtynine = 69; 
+	PSG_LINKED_LIST_ITERATOR_SET_ITEM_FUNCTION_NAME(int_p)(it0, &sixtynine);
+	v = PSG_LINKED_LIST_ITERATOR_GET_ITEM_FUNCTION_NAME(int_p)(it0) == NULL ? 0 : *PSG_LINKED_LIST_ITERATOR_GET_ITEM_FUNCTION_NAME(int_p)(it0);
+	printf("value: %d, index: %d -> TEST %s %s\n", v, 0, "6", (b = (v == sixtynine)) ? "PASSED" : "FAILED");
+	if (!b)
+	{
+		PSG_LINKED_LIST_ITERATOR_FREE_FUNCTION_NAME(int_p)(it0);
+		PSG_LINKED_LIST_FREE_FUNCTION_NAME(int_p)(list);
+		free(i);
+		free(ii);
+		free(iii);
+		free(iv);
+		return;
+	}
+
+	// TEST 7
+	
+
+	PSG_LINKED_LIST_ITERATOR_FREE_FUNCTION_NAME(int_p)(it0);
+	PSG_LINKED_LIST_FREE_FUNCTION_NAME(int_p)(list);
+	free(i);
+	free(ii);
+	free(iii);
+	free(iv);
+}
+
 //
 int main(void)
 {
@@ -218,6 +386,7 @@ int main(void)
 	// free(iv);
 
 	//
+	/*
 	PSG_LINKED_LIST_OPAQUE_NAME(int_p) list = PSG_LINKED_LIST_NEW_FUNCTION_NAME(int_p)();
 	int *i = malloc(sizeof(int));
 	*i = 1;
@@ -236,7 +405,7 @@ int main(void)
 	PSG_LINKED_LIST_ITERATOR_OPAQUE_NAME(int_p) it0 = PSG_LINKED_LIST_ITERATOR_NEW_FUNCTION_NAME(int_p)(list);
 	PSG_LINKED_LIST_ITERATOR_OPAQUE_NAME(int_p) it1 = PSG_LINKED_LIST_ITERATOR_NEW_FUNCTION_NAME(int_p)(list);
 	//PSG_LINKED_LIST_ITERATOR_NEXT_FUNCTION_NAME(int_p)(it0);
-	PSG_LINKED_LIST_ITERATOR_NEXT_FUNCTION_NAME(int_p)(it1);
+	//PSG_LINKED_LIST_ITERATOR_NEXT_FUNCTION_NAME(int_p)(it1);
 	printf("%d\n", PSG_LINKED_LIST_ITERATOR_IS_EQUAL_FUNCTION_NAME(int_p)(it0, it1));
 	PSG_LINKED_LIST_ITERATOR_FREE_FUNCTION_NAME(int_p)(it0);
 	PSG_LINKED_LIST_ITERATOR_FREE_FUNCTION_NAME(int_p)(it1);
@@ -246,6 +415,9 @@ int main(void)
 	free(ii);
 	free(iii);
 	free(iv);
+	*/
+
+	iterator_test();
 
 	return 0;
 }
