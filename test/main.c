@@ -159,9 +159,6 @@ void iterator_test(void)
 		return;
 	}
 
-	// TEST 7
-	
-
 	PSG_LINKED_LIST_ITERATOR_FREE_FUNCTION_NAME(int_p)(it0);
 	PSG_LINKED_LIST_FREE_FUNCTION_NAME(int_p)(list);
 	free(i);
