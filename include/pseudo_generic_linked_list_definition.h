@@ -46,34 +46,34 @@
     }
 
 //
-#define PSG_LINKED_LIST_STRUCTURE(user_type, item_type)    \
-    PSG_LINKED_LIST_STRUCTURE_NAME(user_type)              \
+#define PSG_LL_STRUCT(user_type, item_type)                \
+    PSG_LL_STRUCT_T(user_type)                             \
     {                                                      \
         PSG_NODE_STRUCTURE_NAME(user_type) * first, *last; \
         size_t size;                                       \
     }
 
 //
-#define PSG_LINKED_LIST_NEW_FUNCTION(user_type, item_type)                                                                                                        \
-    PSG_LINKED_LIST_NEW_FUNCTION_PROTOTYPE(user_type, item_type)                                                                                                  \
-    {                                                                                                                                                             \
-        PSG_LINKED_LIST_STRUCTURE_NAME(user_type) *self = (PSG_LINKED_LIST_STRUCTURE_NAME(user_type) *)malloc(sizeof(PSG_LINKED_LIST_STRUCTURE_NAME(user_type))); \
-        if (self)                                                                                                                                                 \
-        {                                                                                                                                                         \
-            self->first = PSG_NODE_NEW_FUNCTION_NAME(user_type)(0, 0, 0);                                                                                         \
-            self->last = PSG_NODE_NEW_FUNCTION_NAME(user_type)(0, 0, 0);                                                                                          \
-            self->first->next = self->last;                                                                                                                       \
-            self->last->prev = self->first;                                                                                                                       \
-            self->last->next = self->last;                                                                                                                        \
-            self->first->prev = self->first;                                                                                                                      \
-            self->size = 0;                                                                                                                                       \
-        }                                                                                                                                                         \
-        return self;                                                                                                                                              \
+#define PSG_LL_NEW_F(user_type, item_type)                                                                           \
+    PSG_LL_NEW_PROTO(user_type, item_type)                                                                           \
+    {                                                                                                                \
+        PSG_LL_STRUCT_T(user_type) *self = (PSG_LL_STRUCT_T(user_type) *)malloc(sizeof(PSG_LL_STRUCT_T(user_type))); \
+        if (self)                                                                                                    \
+        {                                                                                                            \
+            self->first = PSG_NODE_NEW_FUNCTION_NAME(user_type)(0, 0, 0);                                            \
+            self->last = PSG_NODE_NEW_FUNCTION_NAME(user_type)(0, 0, 0);                                             \
+            self->first->next = self->last;                                                                          \
+            self->last->prev = self->first;                                                                          \
+            self->last->next = self->last;                                                                           \
+            self->first->prev = self->first;                                                                         \
+            self->size = 0;                                                                                          \
+        }                                                                                                            \
+        return self;                                                                                                 \
     }
 
 //
-#define PSG_LINKED_LIST_FREE_FUNCTION(user_type, item_type)               \
-    PSG_LINKED_LIST_FREE_FUNCTION_PROTOTYPE(user_type, item_type)         \
+#define PSG_LL_FREE_F(user_type, item_type)                               \
+    PSG_LL_FREE_PROTO(user_type, item_type)                               \
     {                                                                     \
         if (self)                                                         \
         {                                                                 \
@@ -91,20 +91,20 @@
         }                                                                 \
     }
 
-#define PSG_LINKED_LIST_GET_SIZE_FUNCTION(user_type, item_type)   \
-    PSG_LINKED_LIST_GET_SIZE_FUNCTION_PROTO(user_type, item_type) \
-    {                                                             \
-        size_t size = 0;                                          \
-        if (self)                                                 \
-        {                                                         \
-            size = self->size;                                    \
-        }                                                         \
-        return size;                                              \
+#define PSG_LL_GET_SIZE_F(user_type, item_type) \
+    PSG_LL_GET_SIZE_PROTO(user_type, item_type) \
+    {                                           \
+        size_t size = 0;                        \
+        if (self)                               \
+        {                                       \
+            size = self->size;                  \
+        }                                       \
+        return size;                            \
     }
 
 //
-#define PSG_LINKED_LIST_PUSH_FIRST_FUNCTION(user_type, item_type)                                                                   \
-    PSG_LINKED_LIST_PUSH_FIRST_FUNCTION_PROTO(user_type, item_type)                                                                 \
+#define PSG_LL_INSERT_FIRST_F(user_type, item_type)                                                                                 \
+    PSG_LL_INSERT_FIRST_PROTO(user_type, item_type)                                                                                 \
     {                                                                                                                               \
         if (self)                                                                                                                   \
         {                                                                                                                           \
@@ -116,8 +116,8 @@
     }
 
 //
-#define PSG_LINKED_LIST_POP_LAST_FUNCTION(user_type, item_type)         \
-    PSG_LINKED_LIST_POP_LAST_FUNCTION_PROTO(user_type, item_type)       \
+#define PSG_LL_REMOVE_LAST_F(user_type, item_type)                      \
+    PSG_LL_REMOVE_LAST_PROTO(user_type, item_type)                      \
     {                                                                   \
         item_type item = 0;                                             \
         if (self && self->size)                                         \
@@ -140,7 +140,7 @@
 #define PSG_LINKED_LIST_ITERATOR_STRUCTURE(user_type)  \
     PSG_LINKED_LIST_ITERATOR_STRUCTURE_NAME(user_type) \
     {                                                  \
-        PSG_LINKED_LIST_STRUCTURE_NAME(user_type)      \
+        PSG_LL_STRUCT_T(user_type)                     \
         const *iterable;                               \
         PSG_NODE_STRUCTURE_NAME(user_type) * curr;     \
     };
@@ -265,12 +265,12 @@
     PSG_NODE_STRUCTURE(user_type, item_type);                        \
     PSG_NODE_NEW_FUNCTION(user_type, item_type)                      \
     PSG_NODE_FREE_FUNCTION(user_type, item_type)                     \
-    PSG_LINKED_LIST_STRUCTURE(user_type, item_type);                 \
-    PSG_LINKED_LIST_NEW_FUNCTION(user_type, item_type)               \
-    PSG_LINKED_LIST_FREE_FUNCTION(user_type, item_type)              \
-    PSG_LINKED_LIST_GET_SIZE_FUNCTION(user_type, item_type)          \
-    PSG_LINKED_LIST_PUSH_FIRST_FUNCTION(user_type, item_type)        \
-    PSG_LINKED_LIST_POP_LAST_FUNCTION(user_type, item_type)          \
+    PSG_LL_STRUCT(user_type, item_type);                             \
+    PSG_LL_NEW_F(user_type, item_type)                               \
+    PSG_LL_FREE_F(user_type, item_type)                              \
+    PSG_LL_GET_SIZE_F(user_type, item_type)                          \
+    PSG_LL_INSERT_FIRST_F(user_type, item_type)                      \
+    PSG_LL_REMOVE_LAST_F(user_type, item_type)                       \
     PSG_LINKED_LIST_ITERATOR_STRUCTURE(user_type)                    \
     PSG_LINKED_LIST_ITERATOR_NEW_FUNCTION(user_type)                 \
     PSG_LINKED_LIST_ITERATOR_FREE_FUNCTION(user_type)                \
