@@ -21,8 +21,8 @@
 
 //
 #define PSG_LL_NEW_PROTO(user_type, item_type) \
-    PSG_LL_T(user_type)                        \
-    PSG_LL_NEW(user_type)(void)
+    void                                       \
+    PSG_LL_NEW(user_type)(PSG_LL_T(user_type) * out)
 
 //
 #define PSG_LL_FREE(user_type) \
@@ -38,7 +38,7 @@
 
 //
 #define PSG_LL_GET_SIZE_PROTO(user_type, item_type) \
-    size_t PSG_LL_GET_SIZE(user_type)(PSG_LL_T(user_type) self)
+    void PSG_LL_GET_SIZE(user_type)(PSG_LL_T(user_type) self, size_t *out)
 
 //
 #define PSG_LL_INSERT_FIRST(user_type) \
@@ -54,7 +54,7 @@
 
 //
 #define PSG_LL_REMOVE_LAST_PROTO(user_type, item_type) \
-    item_type PSG_LL_REMOVE_LAST(user_type)(PSG_LL_T(user_type) self)
+    void PSG_LL_REMOVE_LAST(user_type)(PSG_LL_T(user_type) self, item_type * out)
 
 //
 #define PSG_LL_ITERATOR_STRUCT_T(user_type) \
@@ -74,8 +74,7 @@
 
 //
 #define PSG_LL_ITERATOR_NEW_PROTO(user_type) \
-    PSG_LL_ITERATOR_T(user_type)             \
-    PSG_LL_ITERATOR_NEW(user_type)(PSG_LL_T(user_type) iterable)
+    void PSG_LL_ITERATOR_NEW(user_type)(PSG_LL_T(user_type) iterable, PSG_LL_ITERATOR_T(user_type) * out)
 
 //
 #define PSG_LL_ITERATOR_FREE(user_type) \
@@ -131,7 +130,7 @@
 
 //
 #define PSG_LL_ITERATOR_GET_ITEM_PROTO(user_type, item_type) \
-    item_type PSG_LL_ITERATOR_GET_ITEM(user_type)(PSG_LL_ITERATOR_T(user_type) self)
+    void PSG_LL_ITERATOR_GET_ITEM(user_type)(PSG_LL_ITERATOR_T(user_type) self, item_type * out)
 
 //
 #define PSG_LL_ITERATOR_SET_ITEM(user_type) \

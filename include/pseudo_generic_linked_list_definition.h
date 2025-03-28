@@ -18,17 +18,17 @@
     psg_##user_type##_node_new
 
 //
-#define PSG_NODE_NEW_F(user_type, item_type)                                                                                                         \
-    PSG_NODE_STRUCT_T(user_type) * PSG_NODE_NEW(user_type)(item_type item, PSG_NODE_STRUCT_T(user_type) * prev, PSG_NODE_STRUCT_T(user_type) * next) \
-    {                                                                                                                                                \
-        PSG_NODE_STRUCT_T(user_type) *self = (PSG_NODE_STRUCT_T(user_type) *)malloc(sizeof(PSG_NODE_STRUCT_T(user_type)));                           \
-        if (self)                                                                                                                                    \
-        {                                                                                                                                            \
-            self->item = item;                                                                                                                       \
-            self->prev = prev;                                                                                                                       \
-            self->next = next;                                                                                                                       \
-        }                                                                                                                                            \
-        return self;                                                                                                                                 \
+#define PSG_NODE_NEW_F(user_type, item_type)                                                                                                                    \
+    void PSG_NODE_NEW(user_type)(item_type item, PSG_NODE_STRUCT_T(user_type) * prev, PSG_NODE_STRUCT_T(user_type) * next, PSG_NODE_STRUCT_T(user_type) * *out) \
+    {                                                                                                                                                           \
+        PSG_NODE_STRUCT_T(user_type) *self = (PSG_NODE_STRUCT_T(user_type) *)malloc(sizeof(PSG_NODE_STRUCT_T(user_type)));                                      \
+        if (self)                                                                                                                                               \
+        {                                                                                                                                                       \
+            self->item = item;                                                                                                                                  \
+            self->prev = prev;                                                                                                                                  \
+            self->next = next;                                                                                                                                  \
+            *out = self;                                                                                                                                        \
+        }                                                                                                                                                       \
     }
 
 //
@@ -60,15 +60,15 @@
         PSG_LL_STRUCT_T(user_type) *self = (PSG_LL_STRUCT_T(user_type) *)malloc(sizeof(PSG_LL_STRUCT_T(user_type))); \
         if (self)                                                                                                    \
         {                                                                                                            \
-            self->first = PSG_NODE_NEW(user_type)(0, 0, 0);                                                          \
-            self->last = PSG_NODE_NEW(user_type)(0, 0, 0);                                                           \
+            PSG_NODE_NEW(user_type)(0, 0, 0, &self->first);                                                          \
+            PSG_NODE_NEW(user_type)(0, 0, 0, &self->last);                                                           \
             self->first->next = self->last;                                                                          \
             self->last->prev = self->first;                                                                          \
             self->last->next = self->last;                                                                           \
             self->first->prev = self->first;                                                                         \
             self->size = 0;                                                                                          \
+            *out = self;                                                                                             \
         }                                                                                                            \
-        return self;                                                                                                 \
     }
 
 //
@@ -94,25 +94,24 @@
 #define PSG_LL_GET_SIZE_F(user_type, item_type) \
     PSG_LL_GET_SIZE_PROTO(user_type, item_type) \
     {                                           \
-        size_t size = 0;                        \
         if (self)                               \
         {                                       \
-            size = self->size;                  \
+            *out = self->size;                  \
         }                                       \
-        return size;                            \
     }
 
 //
-#define PSG_LL_INSERT_FIRST_F(user_type, item_type)                                                             \
-    PSG_LL_INSERT_FIRST_PROTO(user_type, item_type)                                                             \
-    {                                                                                                           \
-        if (self)                                                                                               \
-        {                                                                                                       \
-            PSG_NODE_STRUCT_T(user_type) *node = PSG_NODE_NEW(user_type)(item, self->first, self->first->next); \
-            self->first->next->prev = node;                                                                     \
-            self->first->next = node;                                                                           \
-            self->size++;                                                                                       \
-        }                                                                                                       \
+#define PSG_LL_INSERT_FIRST_F(user_type, item_type)                               \
+    PSG_LL_INSERT_FIRST_PROTO(user_type, item_type)                               \
+    {                                                                             \
+        if (self)                                                                 \
+        {                                                                         \
+            PSG_NODE_STRUCT_T(user_type) * node;                                  \
+            PSG_NODE_NEW(user_type)(item, self->first, self->first->next, &node); \
+            self->first->next->prev = node;                                       \
+            self->first->next = node;                                             \
+            self->size++;                                                         \
+        }                                                                         \
     }
 
 //
@@ -128,8 +127,8 @@
             tmp->prev->next = self->last;                         \
             PSG_NODE_FREE(user_type)(tmp);                        \
             self->size--;                                         \
+            *out = item;                                          \
         }                                                         \
-        return item;                                              \
     }
 
 //
@@ -151,12 +150,8 @@
             if ((it = malloc(sizeof(PSG_LL_ITERATOR_STRUCT_T(user_type)))))                                                            \
             {                                                                                                                          \
                 *it = (PSG_LL_ITERATOR_STRUCT_T(user_type)){.iterable = iterable, .curr = iterable->size ? iterable->first->next : 0}; \
+                *out = it;                                                                                                             \
             }                                                                                                                          \
-            return it;                                                                                                                 \
-        }                                                                                                                              \
-        else                                                                                                                           \
-        {                                                                                                                              \
-            return 0;                                                                                                                  \
         }                                                                                                                              \
     }
 
@@ -179,6 +174,10 @@
             if (self->curr == to_compare->curr)                   \
             {                                                     \
                 return 1;                                         \
+            }                                                     \
+            else                                                  \
+            {                                                     \
+                return 0;                                         \
             }                                                     \
         }                                                         \
         return 0;                                                 \
@@ -238,11 +237,7 @@
     {                                                                                                        \
         if (self && self->curr && self->curr != self->iterable->first && self->curr != self->iterable->last) \
         {                                                                                                    \
-            return self->curr->item;                                                                         \
-        }                                                                                                    \
-        else                                                                                                 \
-        {                                                                                                    \
-            return 0;                                                                                        \
+            *out = self->curr->item;                                                                         \
         }                                                                                                    \
     }
 

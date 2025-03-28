@@ -10,8 +10,10 @@ void iterator_test(void)
 	char *smesg = NULL;
 
 	// TEST 0
-	PSG_LL_T(int_p) list = PSG_LL_NEW(int_p)();
-	s = PSG_LL_GET_SIZE(int_p)(list);
+	PSG_LL_T(int_p)
+	list;
+	PSG_LL_NEW(int_p)(&list);
+	PSG_LL_GET_SIZE(int_p)(list, &s);
 	b = 0 == s;
 	printf("size: %zu -> TEST 0 %s \n", s, b ? "PASSED" : "FAILED"); // @todo make it reusable
 	if (!b)
@@ -33,7 +35,7 @@ void iterator_test(void)
 	PSG_LL_INSERT_FIRST(int_p)(list, iii);
 	PSG_LL_INSERT_FIRST(int_p)(list, ii);
 	PSG_LL_INSERT_FIRST(int_p)(list, i);
-	s = PSG_LL_GET_SIZE(int_p)(list);
+	PSG_LL_GET_SIZE(int_p)(list, &s);
 	b = 4 == s;
 	printf("size: %zu -> TEST 1 %s\n", s, b ? "PASSED" : "FAILED");
 	if (!b)
@@ -50,11 +52,14 @@ void iterator_test(void)
 	size_t index = 0;
 	int values[s];
 	PSG_LL_ITERATOR_T(int_p)
-	it0 = PSG_LL_ITERATOR_NEW(int_p)(list);
+	it0;
+	PSG_LL_ITERATOR_NEW(int_p)(list, &it0);
 	while (!PSG_LL_ITERATOR_IS_LAST(int_p)(it0))
 	{
 		// printf("index: %zu, value: %d\n", index, *PSG_LL_ITERATOR_GET_ITEM(int_p)(it0));
-		*(values + index++) = *PSG_LL_ITERATOR_GET_ITEM(int_p)(it0);
+		int *t;
+		PSG_LL_ITERATOR_GET_ITEM(int_p)(it0, &t);
+		*(values + index++) = *t;
 		PSG_LL_ITERATOR_NEXT(int_p)(it0);
 	}
 	if (*(values + --index) == 4 && *(values + --index) == 3 && *(values + --index) == 2 && *(values + --index) == 1)
@@ -80,9 +85,10 @@ void iterator_test(void)
 
 	// TEST 3
 	PSG_LL_ITERATOR_NEXT(int_p)(it0);
-	int v = PSG_LL_ITERATOR_GET_ITEM(int_p)(it0) == NULL ? 0 : *PSG_LL_ITERATOR_GET_ITEM(int_p)(it0);
-	char *index_smsg_value = (b = PSG_LL_ITERATOR_IS_LAST(int_p)(it0)) ? "LAST" : "NOT_LAST";
-	printf("value: %d, index: %s -> TEST %s %s\n", v, index_smsg_value, "3", b ? "PASSED" : "FAILED");
+	int *v = NULL;
+	PSG_LL_ITERATOR_GET_ITEM(int_p)(it0, &v);
+	b = PSG_LL_ITERATOR_IS_LAST(int_p)(it0);
+	printf("value: %d, index: %s -> TEST %s %s\n", v ? *v : 0, b ? "LAST" : "NOT_LAST", "3", b ? "PASSED" : "FAILED");
 	if (!b)
 	{
 		PSG_LL_ITERATOR_FREE(int_p)(it0);
@@ -100,7 +106,9 @@ void iterator_test(void)
 	while (!PSG_LL_ITERATOR_IS_FIRST(int_p)(it0))
 	{
 		// printf("index: %zu, value: %d\n", index, *PSG_LL_ITERATOR_GET_ITEM(int_p)(it0));
-		*(values + --index) = *PSG_LL_ITERATOR_GET_ITEM(int_p)(it0);
+		int *t;
+		PSG_LL_ITERATOR_GET_ITEM(int_p)(it0, &t);
+		*(values + --index) = *t;
 		PSG_LL_ITERATOR_PREV(int_p)(it0);
 	}
 	index = s;
@@ -127,9 +135,9 @@ void iterator_test(void)
 
 	// TEST 5
 	PSG_LL_ITERATOR_PREV(int_p)(it0);
-	v = PSG_LL_ITERATOR_GET_ITEM(int_p)(it0) == NULL ? 0 : *PSG_LL_ITERATOR_GET_ITEM(int_p)(it0);
-	index_smsg_value = (b = PSG_LL_ITERATOR_IS_FIRST(int_p)(it0)) ? "FIRST" : "NOT_FIRST";
-	printf("value: %d, index: %s -> TEST %s %s\n", v, index_smsg_value, "5", b ? "PASSED" : "FAILED");
+	PSG_LL_ITERATOR_GET_ITEM(int_p)(it0, &v);
+	b = PSG_LL_ITERATOR_IS_FIRST(int_p)(it0);
+	printf("value: %d, index: %s -> TEST %s %s\n", v ? *v : 0, b ? "FIRST" : "NOT_FIRST", "5", b ? "PASSED" : "FAILED");
 	if (!b)
 	{
 		PSG_LL_ITERATOR_FREE(int_p)(it0);
@@ -145,8 +153,8 @@ void iterator_test(void)
 	PSG_LL_ITERATOR_NEXT(int_p)(it0);
 	int sixtynine = 69;
 	PSG_LL_ITERATOR_SET_ITEM(int_p)(it0, &sixtynine);
-	v = PSG_LL_ITERATOR_GET_ITEM(int_p)(it0) == NULL ? 0 : *PSG_LL_ITERATOR_GET_ITEM(int_p)(it0);
-	printf("value: %d, index: %d -> TEST %s %s\n", v, 0, "6", (b = (v == sixtynine)) ? "PASSED" : "FAILED");
+	PSG_LL_ITERATOR_GET_ITEM(int_p)(it0, &v);
+	printf("value: %d, index: %d -> TEST %s %s\n", *v, 0, "6", (b = (*v == sixtynine)) ? "PASSED" : "FAILED");
 	if (!b)
 	{
 		PSG_LL_ITERATOR_FREE(int_p)(it0);
@@ -286,13 +294,13 @@ int main(void)
 	// PSG_LL_ITERATOR_T(int_p) it0 = PSG_LINKED_LIST_ITERATOR_NEW_FUNCTION_NAME(int_p)(0);
 	// PSG_LL_ITERATOR_FREE(int_p)(it0);
 
-	//LEE(int_p)(list);
-// free(ii);
+	// LEE(int_p)(list);
+	// free(ii);
 	// free(iii);
 	// free(iv);
 
 	//
- 	// iterator is firstith a non-empty list: V (returns 1)
+	// iterator is firstith a non-empty list: V (returns 1)
 	// itera t initialized ty list: V (returns 0)
 	// iterator is last initialized with an empty list: V (returns 0)
 	// iterator is first initialized with an empty list: V (returns 0)
