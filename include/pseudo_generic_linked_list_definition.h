@@ -18,17 +18,31 @@
     psg_##user_type##_node_new
 
 //
-#define PSG_NODE_NEW_F(user_type, item_type)                                                                                                                    \
-    void PSG_NODE_NEW(user_type)(item_type item, PSG_NODE_STRUCT_T(user_type) * prev, PSG_NODE_STRUCT_T(user_type) * next, PSG_NODE_STRUCT_T(user_type) * *out) \
-    {                                                                                                                                                           \
-        PSG_NODE_STRUCT_T(user_type) *self = (PSG_NODE_STRUCT_T(user_type) *)malloc(sizeof(PSG_NODE_STRUCT_T(user_type)));                                      \
-        if (self)                                                                                                                                               \
-        {                                                                                                                                                       \
-            self->item = item;                                                                                                                                  \
-            self->prev = prev;                                                                                                                                  \
-            self->next = next;                                                                                                                                  \
-            *out = self;                                                                                                                                        \
-        }                                                                                                                                                       \
+#define PSG_NODE_NEW_F(user_type, item_type)                                                                                                    \
+    void PSG_NODE_NEW(user_type)(PSG_NODE_STRUCT_T(user_type) * prev, PSG_NODE_STRUCT_T(user_type) * next, PSG_NODE_STRUCT_T(user_type) * *out) \
+    {                                                                                                                                           \
+        PSG_NODE_STRUCT_T(user_type) *self = (PSG_NODE_STRUCT_T(user_type) *)malloc(sizeof(PSG_NODE_STRUCT_T(user_type)));                      \
+        if (self)                                                                                                                               \
+        {                                                                                                                                       \
+            self->prev = prev;                                                                                                                  \
+            self->next = next;                                                                                                                  \
+            *out = self;                                                                                                                        \
+        }                                                                                                                                       \
+    }
+
+// @todo define a node_set_item method to avoid item initialization (actually it is a problem in case of item_type defined as struct)
+//
+#define PSG_NODE_SET_ITEM(user_type) \
+    psg_##user_type##_node_set_item
+
+//
+#define PSG_NODE_SET_ITEM_F(user_type, item_type)                                          \
+    void PSG_NODE_SET_ITEM(user_type)(PSG_NODE_STRUCT_T(user_type) * self, item_type item) \
+    {                                                                                      \
+        if (self)                                                                          \
+        {                                                                                  \
+            self->item = item;                                                             \
+        }                                                                                  \
     }
 
 //
@@ -60,8 +74,8 @@
         PSG_LL_STRUCT_T(user_type) *self = (PSG_LL_STRUCT_T(user_type) *)malloc(sizeof(PSG_LL_STRUCT_T(user_type))); \
         if (self)                                                                                                    \
         {                                                                                                            \
-            PSG_NODE_NEW(user_type)(0, 0, 0, &self->first);                                                          \
-            PSG_NODE_NEW(user_type)(0, 0, 0, &self->last);                                                           \
+            PSG_NODE_NEW(user_type)(0, 0, &self->first);                                                             \
+            PSG_NODE_NEW(user_type)(0, 0, &self->last);                                                              \
             self->first->next = self->last;                                                                          \
             self->last->prev = self->first;                                                                          \
             self->last->next = self->last;                                                                           \
@@ -101,33 +115,32 @@
     }
 
 //
-#define PSG_LL_INSERT_FIRST_F(user_type, item_type)                               \
-    PSG_LL_INSERT_FIRST_PROTO(user_type, item_type)                               \
-    {                                                                             \
-        if (self)                                                                 \
-        {                                                                         \
-            PSG_NODE_STRUCT_T(user_type) * node;                                  \
-            PSG_NODE_NEW(user_type)(item, self->first, self->first->next, &node); \
-            self->first->next->prev = node;                                       \
-            self->first->next = node;                                             \
-            self->size++;                                                         \
-        }                                                                         \
+#define PSG_LL_INSERT_FIRST_F(user_type, item_type)                         \
+    PSG_LL_INSERT_FIRST_PROTO(user_type, item_type)                         \
+    {                                                                       \
+        if (self)                                                           \
+        {                                                                   \
+            PSG_NODE_STRUCT_T(user_type) * node;                            \
+            PSG_NODE_NEW(user_type)(self->first, self->first->next, &node); \
+            PSG_NODE_SET_ITEM(user_type)(node, item);                       \
+            self->first->next->prev = node;                                 \
+            self->first->next = node;                                       \
+            self->size++;                                                   \
+        }                                                                   \
     }
 
 //
 #define PSG_LL_REMOVE_LAST_F(user_type, item_type)                \
     PSG_LL_REMOVE_LAST_PROTO(user_type, item_type)                \
     {                                                             \
-        item_type item = 0;                                       \
         if (self && self->size)                                   \
         {                                                         \
             PSG_NODE_STRUCT_T(user_type) *tmp = self->last->prev; \
-            item = tmp->item;                                     \
+            *out = tmp->item;                                     \
             self->last->prev = tmp->prev;                         \
             tmp->prev->next = self->last;                         \
             PSG_NODE_FREE(user_type)(tmp);                        \
             self->size--;                                         \
-            *out = item;                                          \
         }                                                         \
     }
 
@@ -255,6 +268,7 @@
 #define PSG_LINKED_LIST_DEFINITION_MOD(user_type, item_type) \
     PSG_NODE_STRUCT(user_type, item_type);                   \
     PSG_NODE_NEW_F(user_type, item_type)                     \
+    PSG_NODE_SET_ITEM_F(user_type, item_type)                \
     PSG_NODE_FREE_F(user_type, item_type)                    \
     PSG_LL_STRUCT(user_type, item_type);                     \
     PSG_LL_NEW_F(user_type, item_type)                       \
